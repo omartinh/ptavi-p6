@@ -21,10 +21,12 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         while 1:
             # Leyendo línea a línea lo que nos envía el cliente
             line = self.rfile.read()
-
+            client_message = line.decode('utf-8').split()           
             if not line:
                 break
-            client_message = line.decode('utf-8').split()
+            if client_message[1].split(':')[0] != 'sip' or client_message[2] != 'SIP/2.0':
+                print("El cliente nos manda " + line.decode('utf-8'))
+                self.wfile.write(b"SIP/2.0 400 Bad Request \r\n")
             if client_message[0] == 'INVITE':
                 print("El cliente nos manda " + line.decode('utf-8'))
                 self.wfile.write(b"SIP/2.0 100 Trying\r\n" +
@@ -35,8 +37,13 @@ class EchoHandler(socketserver.DatagramRequestHandler):
                 aEjecutar = 'mp32rtp -i 127.0.0.1 -p 23032 < ' + Audio_file
                 print("Vamos a ejecutar: " + aEjecutar)
                 os.system(aEjecutar)
+            elif client_message[0] == 'BYE':
+                print("El cliente nos manda " + line.decode('utf-8'))
+                self.wfile.write(b"SIP/2.0 200 OK\r\n")
+            elif not client_message[0] in ['ACK', 'INVITE', 'BYE']:
+                print("Metodo erroneo: " + client_message[0])
+                self.wfile.write(b"SIP/2.0 405 Method Not Allowed \r\n")
 
-                
             # Si no hay más líneas salimos del bucle infinito
 
 
@@ -51,4 +58,5 @@ if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
     serv = socketserver.UDPServer(('', int(PORT)), EchoHandler)
     print("Lanzando servidor UDP de eco...")
+    print("Listening...")
     serv.serve_forever()
