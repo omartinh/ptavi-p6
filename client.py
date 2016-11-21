@@ -22,8 +22,9 @@ Login = Receiver.split('@')[0]
 SERVER = Receiver_ID[1].split(":")[0]
 PORT = int(Receiver_ID[1].split(":")[1])
 
+
 # Contenido que vamos a enviar
-LINE = '¡Hola mundo!'
+LINE = Method + ' sip:' + Receiver.split(':')[0] + ' SIP/2.0'
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
 my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
