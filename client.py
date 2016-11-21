@@ -38,12 +38,11 @@ try:
     data = my_socket.recv(1024)
 except ConnectionRefusedError:
     sys.exit(" Connection Refused ERROR ")
-    
 
 print('Recibido -- ', data.decode('utf-8'))
 DataList = data.decode('utf-8').split()
 
-if DataList[6] == 'Trying' and DataList[9] =='Ring' and DataList[12] == 'OK':
+if DataList[2] == 'Trying' and DataList[5] == 'Ring' and DataList[8] == 'OK':
     M_ACK = 'ACK sip:' + Receiver.split(':')[0] + ' SIP/2.0'
     my_socket.send(bytes(M_ACK, 'utf-8') + b'\r\n')
     print("Enviando: " + M_ACK)
