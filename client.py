@@ -5,12 +5,22 @@ Programa cliente que abre un socket a un servidor
 """
 
 import socket
+import sys
 
 # Cliente UDP simple.
 
 # Dirección IP del servidor.
-SERVER = 'localhost'
-PORT = 6001
+
+try:
+    Method = sys.argv[1]
+    Receiver = sys.argv[2]
+except:
+    sys.exit("Usage: python client.py method receiver@IP:SIPport")
+
+Receiver_ID = Receiver.split('@')
+Login = Receiver.split('@')[0]
+SERVER = Receiver_ID[1].split(":")[0]
+PORT = int(Receiver_ID[1].split(":")[1])
 
 # Contenido que vamos a enviar
 LINE = '¡Hola mundo!'
